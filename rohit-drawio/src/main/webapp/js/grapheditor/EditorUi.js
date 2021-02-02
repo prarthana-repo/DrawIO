@@ -2907,6 +2907,7 @@ EditorUi.prototype.open = function()
  */
 EditorUi.prototype.showPopupMenu = function(fn, x, y, evt)
 {
+	alert('menu')
 	this.editor.graph.popupMenuHandler.hideMenu();
 	
 	var menu = new mxPopupMenu(fn);
@@ -4066,6 +4067,20 @@ EditorUi.prototype.showDialog = function(elt, w, h, modal, closable, onClose, no
 	this.dialog = new Dialog(this, elt, w, h, modal, closable, onClose, noScroll, transparent, onResize, ignoreBgClick);
 	this.dialogs.push(this.dialog);
 };
+//Prarthana add new dialog
+EditorUi.prototype.showPropertyDialog = function(elt, w, h, modal, closable, onClose, noScroll, transparent, onResize, ignoreBgClick)
+{
+	this.editor.graph.tooltipHandler.resetTimer();
+	this.editor.graph.tooltipHandler.hideTooltip();
+	
+	if (this.dialogs == null)
+	{
+		this.dialogs = [];
+	}
+	
+	this.dialog = new Dialog(this, elt, w, h, modal, closable, onClose, noScroll, transparent, onResize, ignoreBgClick);
+	this.dialogs.push(this.dialog);
+};
 
 /**
  * Displays a print dialog.
@@ -4281,6 +4296,7 @@ EditorUi.prototype.isCompatibleString = function(data)
  */
 EditorUi.prototype.saveFile = function(forceDialog)
 {
+	
 	if (!forceDialog && this.editor.filename != null)
 	{
 		this.save(this.editor.getOrCreateFilename());
@@ -4290,6 +4306,7 @@ EditorUi.prototype.saveFile = function(forceDialog)
 		var dlg = new FilenameDialog(this, this.editor.getOrCreateFilename(), mxResources.get('save'), mxUtils.bind(this, function(name)
 		{
 			this.save(name);
+			
 		}), null, mxUtils.bind(this, function(name)
 		{
 			if (name != null && name.length > 0)
@@ -4311,6 +4328,7 @@ EditorUi.prototype.saveFile = function(forceDialog)
  */
 EditorUi.prototype.save = function(name)
 {
+	
 	if (name != null)
 	{
 		if (this.editor.graph.isEditing())
@@ -4320,10 +4338,13 @@ EditorUi.prototype.save = function(name)
 		
 		var xml = mxUtils.getXml(this.editor.getGraphXml());
 		
+		//var xml = mxUtils.getPrettyXML(this.editor.getGraphXml());
+		
 		try
 		{
 			if (Editor.useLocalStorage)
 			{
+				mxUtils.alert(xml);
 				if (localStorage.getItem(name) != null &&
 					!mxUtils.confirm(mxResources.get('replaceIt', [name])))
 				{
@@ -4331,6 +4352,7 @@ EditorUi.prototype.save = function(name)
 				}
 
 				localStorage.setItem(name, xml);
+				alert(localStorage.getItem(name));
 				this.editor.setStatus(mxUtils.htmlEntities(mxResources.get('saved')) + ' ' + new Date());
 			}
 			else
@@ -4462,6 +4484,18 @@ EditorUi.prototype.showDataDialog = function(cell)
 	if (cell != null)
 	{
 		var dlg = new EditDataDialog(this, cell);
+		this.showDialog(dlg.container, 480, 420, true, false, null, false);
+		dlg.init();
+	}
+
+
+};
+//Prarthana added new dialog
+EditorUi.prototype.showDataDialog1 = function(cell)
+{
+	if (cell != null)
+	{
+		var dlg = new EditDataDialog1(this, cell);
 		this.showDialog(dlg.container, 480, 420, true, false, null, false);
 		dlg.init();
 	}

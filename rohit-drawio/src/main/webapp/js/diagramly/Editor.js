@@ -3778,6 +3778,7 @@
 			var div = diagramFormatPanelAddView.apply(this, arguments);
 			var file = this.editorUi.getCurrentFile();
 			
+			
 			if (mxClient.IS_SVG && this.isShadowOptionVisible())
 			{
 				var ui = this.editorUi;
@@ -5227,6 +5228,7 @@
 				
 				div.appendChild(btn);
 			}
+	
 			
 			var graph = this.editorUi.editor.graph;
 			var state = graph.view.getState(graph.getSelectionCell());

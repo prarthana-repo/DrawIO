@@ -4,12 +4,16 @@
 /**
  * Constructs the actions object for the given UI.
  */
+
 function Actions(editorUi)
 {
 	this.editorUi = editorUi;
+	
 	this.actions = new Object();
 	this.init();
 };
+
+
 
 /**
  * Adds the default actions.
@@ -308,16 +312,51 @@ Actions.prototype.init = function()
 		var cell = graph.getSelectionCell() || graph.getModel().getRoot();
 		ui.showDataDialog(cell);
 	}, null, null, Editor.ctrlKey + '+M');
-	this.addAction('customButtonData...', function()
-			{
-				var cell = graph.getSelectionCell() || graph.getModel().getRoot();
-				ui.showDataDialog(cell);
-			}, null, null, Editor.ctrlKey + '+H');
+
+	//prarthana added new submit button
+
+	
+	this.addAction('customButtonData...', mxUtils.bind(this, function()
+	{
+	      
+	
+		var file = this.editorUi.getCurrentFile();
+		var xml_data = mxUtils.getXml(this.editorUi.editor.getGraphXml());
+		alert(xml_data);
+// 		 var url = "";
+
+		
+
+// 		 var xhr;
+// 	     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+//             xhr = new XMLHttpRequest();
+//            } else if (window.ActiveXObject) { // IE 8 and older
+//                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+//             }
+		
+		
+		
+//   // Open a connection to the server
+//   xhr.open("POST", url, true);
+
+//   // declaring that the data being sent is in XML format
+//   xhr.setRequestHeader("Content-Type", "text/xml");
+
+//   // Send the request
+//   xhr.send(xml_data);
+
+	
+	
+	}, null, null, Editor.ctrlKey + '+H'));
 	this.addAction('showproperties...', function()
 			{
 				var cell = graph.getSelectionCell() || graph.getModel().getRoot();
 				ui.showDataDialog(cell);
+
 			}, null, null, Editor.ctrlKey + '+P');
+			
+			
+			var showPropertyDialog = 
 	this.addAction('editTooltip...', function()
 	{
 		var graph = ui.editor.graph;
@@ -1068,6 +1107,7 @@ Actions.prototype.init = function()
 		if (cells != null && cells.length > 0)
 		{
 			var model = graph.getModel();
+			
 			
 	    	var dlg = new TextareaDialog(this.editorUi, mxResources.get('editStyle') + ':',
 	    		model.getStyle(cells[0]) || '', function(newValue)

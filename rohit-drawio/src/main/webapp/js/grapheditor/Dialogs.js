@@ -420,6 +420,7 @@ var TextareaDialog = function(editorUi, title, url, fn, cancelFn, cancelTitle, w
 	
 	this.textarea = nameInput;
 
+
 	this.init = function()
 	{
 		nameInput.focus();
@@ -1307,8 +1308,550 @@ var EditDataDialog = function(ui, cell)
 
 	var id = (EditDataDialog.getDisplayIdForCell != null) ?
 		EditDataDialog.getDisplayIdForCell(ui, cell) : null;
+		//prarthana
+	//	alert(ui.editor.graph.getModel().getId);
+		var extractId = id.substring(0,20);
+		console.log(extractId);
+	//
+	var addRemoveButton = function(text, name)
+	{
+		var wrapper = document.createElement('div');
+		wrapper.style.position = 'relative';
+		wrapper.style.paddingRight = '20px';
+		wrapper.style.boxSizing = 'border-box';
+		wrapper.style.width = '100%';
+		
+		var removeAttr = document.createElement('a');
+		var img = mxUtils.createImage(Dialog.prototype.closeImage);
+		img.style.height = '9px';
+		img.style.fontSize = '9px';
+		img.style.marginBottom = (mxClient.IS_IE11) ? '-1px' : '5px';
+		
+		removeAttr.className = 'geButton';
+		removeAttr.setAttribute('title', mxResources.get('delete'));
+		removeAttr.style.position = 'absolute';
+		removeAttr.style.top = '4px';
+		removeAttr.style.right = '0px';
+		removeAttr.style.margin = '0px';
+		removeAttr.style.width = '9px';
+		removeAttr.style.height = '9px';
+		removeAttr.style.cursor = 'pointer';
+		removeAttr.appendChild(img);
+		
+		var removeAttrFn = (function(name)
+		{
+			return function()
+			{
+				var count = 0;
+				
+				for (var j = 0; j < names.length; j++)
+				{
+					if (names[j] == name)
+					{
+						texts[j] = null;
+						form.table.deleteRow(count + ((id != null) ? 1 : 0));
+						
+						break;
+					}
+					
+					if (texts[j] != null)
+					{
+						count++;
+					}
+				}
+			};
+		})(name);
+		
+		mxEvent.addListener(removeAttr, 'click', removeAttrFn);
+		
+		var parent = text.parentNode;
+		wrapper.appendChild(text);
+		wrapper.appendChild(removeAttr);
+		parent.appendChild(wrapper);
+	};
+	//prarthana cutomise add text
+	var addTextArea = function(index, name, value)
+	{
+		names[index] = name;
+		texts[index] = form.addTextarea(names[count] + ':', value, 2);
+		texts[index].style.width = '100%';
+		
+		if (value.indexOf('\n') > 0)
+		{
+			texts[index].setAttribute('rows', '2');
+		}
+		
+		// commented remove button
+		// addRemoveButton(texts[index], name);
+		
+		if (meta[name] != null && meta[name].editable == false)
+		{
+			texts[index].setAttribute('disabled', 'disabled');
+		}
+	};
+	
+	var temp = [];
+
+	// added by prarthana: to-do add static values in temp array
+	//temp.push({name: 'field1', value: attrs[0].nodeValue});
+	
+		// add 1st time static fields
+		
+	
+	
+
+	var isLayer = graph.getModel().getParent(cell) == graph.getModel().getRoot();
+	
+
+	for (var i = 0; i < attrs.length; i++)
+	{
+		if ((isLayer || attrs[i].nodeName != 'label') && attrs[i].nodeName != 'placeholders')
+		{
+			// fetching dynamically and adding values in in-memory object
+			temp.push({name: attrs[i].nodeName, value: attrs[i].nodeValue});
+		}
+	}
+	
+	// Sorts by name
+	temp.sort(function(a, b)
+	{
+	    if (a.name < b.name)
+	    {
+	    	return -1;
+	    }
+	    else if (a.name > b.name)
+	    {
+	    	return 1;
+	    }
+	    else
+	    {
+	    	return 0;
+	    }
+	});
+
+	if (id != null)
+	{	
+		var text = document.createElement('div');
+		text.style.width = '100%';
+		text.style.fontSize = '11px';
+		text.style.textAlign = 'center';
+		mxUtils.write(text, id);
+		
+		form.addField(mxResources.get('id') + ':', text);		
+	}
+	//prarthana
+	if ( attrs.length===1) {
+        var cells = graph.getSelectionCells();
+		var shape = graph.getModel().getStyle(cells[0]);
+		console.log(shape);
+		var persistent_disk = 'shape=mxgraph.gcp2.hexIcon;prIcon=persistent_disk';
+		var compute_engine = "shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine";
+		var cloud_network = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_network';
+		var cloud_firewall = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_firewall_rules';
+		var virtual_privatecloud = 'shape=mxgraph.gcp2.hexIcon;prIcon=virtual_private_cloud';
+		var cloud_im = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_iam';
+		//let hasShape = shape.includes("shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine");
+		// the array is defined and has at least one element
+		// array exists and is not empty
+
+		//prarthana add new select button
+		var propertySelect = document.createElement('select');
+		propertySelect.style.marginBottom = '8px';
+		propertySelect.style.width = '202px';
+		
+		if(shape.includes(compute_engine)){
+		   // addTextArea.style.width = "93.5%";
+			temp.push({name: 'Allow_Update', value: ""});
+			temp.push({name: 'Machine_Type', value: ""});
+			temp.push({name: 'Name', value: ""});
+			temp.push({name: 'Source', value: ""});
+			temp.push({name: 'SubNetwork', value: ""});
+			temp.push({name: 'Tags', value: ""});
+			temp.push({name: 'Zone', value: ""});
+		}
+		if(shape.includes(persistent_disk)){
+			
+			temp.push({name: 'Disk_Type', value: ""});
+			temp.push({name: 'Family', value: ""});
+			temp.push({name: 'Image', value: ""});
+			temp.push({name: 'Name', value: ""});
+			temp.push({name: 'Project', value: ""});
+			temp.push({name: 'Size', value: ""});
+			temp.push({name: 'Type', value: ""});
+			temp.push({name: 'Persistant Disk', value: ""});
+			temp.push({name: 'Zone', value: ""});
+
+		}
+		if(shape.includes(cloud_firewall)){
+			
+			temp.push({name: 'Name', value: ""});
+			temp.push({name: 'Network', value: ""});
+			temp.push({name: 'Ports', value: ""});
+			temp.push({name: 'Protocol', value: ""});
+			temp.push({name: 'Source_Tag', value: ""});
+			temp.push({name: 'Type', value: ""});		
+		}
+		if(shape.includes(cloud_im)){
+			
+			temp.push({name: 'Account_Id', value: ""});
+			temp.push({name: 'Display_Name', value: ""});
+			temp.push({name: 'Type', value: ""});		
+		}
+		if(shape.includes(virtual_privatecloud)){
+			
+			temp.push({name: 'Name', value: ""});
+			temp.push({name: 'Auto_Create_Subnetwork', value: ""});
+					
+		}
+		if(shape.includes(cloud_network)){
+			
+			temp.push({name: 'IP_CIDR_Range', value: ""});
+			temp.push({name: 'Region', value: ""});
+			temp.push({name: 'Name', value: ""});
+					
+		}
+	
+	}
+	
+	for (var i = 0; i < temp.length; i++)
+	{
+		addTextArea(count, temp[i].name, temp[i].value);		
+		count++;
+	}
+	
+	var top = document.createElement('div');
+	top.style.cssText = 'position:absolute;left:30px;right:30px;overflow-y:auto;top:30px;bottom:80px;';
+	top.appendChild(form.table);
+
+	var newProp = document.createElement('div');
+	newProp.style.boxSizing = 'border-box';
+	newProp.style.paddingRight = '160px';
+	newProp.style.whiteSpace = 'nowrap';
+	newProp.style.marginTop = '6px';
+	newProp.style.width = '100%';
+	
+	var nameInput = document.createElement('input');
+	nameInput.setAttribute('placeholder', mxResources.get('enterPropertyName'));
+	// placeholder for dynamic key added by user
+	// TO-DO: prarthana
+
+
+
+	nameInput.setAttribute('type', 'text');
+	nameInput.setAttribute('size', (mxClient.IS_IE || mxClient.IS_IE11) ? '36' : '40');
+	nameInput.style.boxSizing = 'border-box';
+	nameInput.style.marginLeft = '2px';
+	nameInput.style.width = '100%';
+	
+	newProp.appendChild(nameInput);
+	top.appendChild(newProp);
+	div.appendChild(top);
+	
+	var addBtn = mxUtils.button(mxResources.get('addProperty'), function()
+	// TO-DO: prarthana: it can be disable to add dynamic attributes by user
+
+	{
+		var name = nameInput.value;
+
+		// Avoid ':' in attribute names which seems to be valid in Chrome
+		if (name.length > 0 && name != 'label' && name != 'placeholders' && name.indexOf(':') < 0)
+		{
+			try
+			{
+				var idx = mxUtils.indexOf(names, name);
+				
+				if (idx >= 0 && texts[idx] != null)
+				{
+					texts[idx].focus();
+				}
+				else
+				{
+					// Checks if the name is valid
+					var clone = value.cloneNode(false);
+					clone.setAttribute(name, '');
+					
+					if (idx >= 0)
+					{
+						names.splice(idx, 1);
+						texts.splice(idx, 1);
+					}
+
+					names.push(name);
+					var text = form.addTextarea(name + ':', '', 2);
+					text.style.width = '100%';
+					texts.push(text);
+					addRemoveButton(text, name);
+
+					text.focus();
+				}
+
+				addBtn.setAttribute('disabled', 'disabled');
+				nameInput.value = '';
+			}
+			catch (e)
+			{
+				mxUtils.alert(e);
+			}
+		}
+		else
+		{
+			mxUtils.alert(mxResources.get('invalidName'));
+		}
+	});
+	
+	this.init = function()
+	{
+		if (texts.length > 0)
+		{
+			texts[0].focus();
+		}
+		else
+		{
+			nameInput.focus();
+		}
+	};
+	
+	addBtn.setAttribute('title', mxResources.get('addProperty'));
+	addBtn.setAttribute('disabled', 'disabled');
+	addBtn.style.textOverflow = 'ellipsis';
+	addBtn.style.position = 'absolute';
+	addBtn.style.overflow = 'hidden';
+	addBtn.style.width = '144px';
+	addBtn.style.right = '0px';
+	addBtn.className = 'geBtn';
+	newProp.appendChild(addBtn);
+
+	var cancelBtn = mxUtils.button(mxResources.get('cancel'), function()
+	{
+		ui.hideDialog.apply(ui, arguments);
+	});
+	
+	cancelBtn.className = 'geBtn';
+	
+	var applyBtn = mxUtils.button(mxResources.get('apply'), function()
+	{
+		try
+		{
+			ui.hideDialog.apply(ui, arguments);
+			
+			// Clones and updates the value
+			value = value.cloneNode(true);
+			var removeLabel = false;
+			console.log(value,'0');
+
+			
+			for (var i = 0; i < names.length; i++)
+			{
+				if (texts[i] == null)
+				{
+					value.removeAttribute(names[i]);
+				}
+				else
+				{
+					console.log(names[i].value, texts[i].value,'0');
+					value.setAttribute(names[i], texts[i].value);
+					removeLabel = removeLabel || (names[i] == 'placeholder' &&
+						value.getAttribute('placeholders') == '1');
+				}
+			}
+			
+			// Removes label if placeholder is assigned
+			if (removeLabel)
+			{
+				value.removeAttribute('label');
+			}
+			
+			// Updates the value of the cell (undoable)
+			graph.getModel().setValue(cell, value);
+
+			var enc = new mxCodec();
+		   var node = enc.encode(graph.getModel().getValue(cell));
+		   console.log(node,'node');
+
+			
+		}
+		catch (e)
+		{
+			mxUtils.alert(e);
+		}
+	});
+	applyBtn.className = 'geBtn gePrimaryBtn';
+	
+	function updateAddBtn()
+	{
+		if (nameInput.value.length > 0)
+		{
+			addBtn.removeAttribute('disabled');
+		}
+		else
+		{
+			addBtn.setAttribute('disabled', 'disabled');
+		}
+	};
+
+	mxEvent.addListener(nameInput, 'keyup', updateAddBtn);
+	
+	// Catches all changes that don't fire a keyup (such as paste via mouse)
+	mxEvent.addListener(nameInput, 'change', updateAddBtn);
+	
+	var buttons = document.createElement('div');
+	buttons.style.cssText = 'position:absolute;left:30px;right:30px;text-align:right;bottom:30px;height:40px;'
+	
+	if (ui.editor.graph.getModel().isVertex(cell) || ui.editor.graph.getModel().isEdge(cell))
+	{
+		var replace = document.createElement('span');
+		replace.style.marginRight = '10px';
+		var input = document.createElement('input');
+		input.setAttribute('type', 'checkbox');
+		input.style.marginRight = '6px';
+		
+		if (value.getAttribute('placeholders') == '1')
+		{
+			input.setAttribute('checked', 'checked');
+			input.defaultChecked = true;
+		}
+	
+		mxEvent.addListener(input, 'click', function()
+		{
+			if (value.getAttribute('placeholders') == '1')
+			{
+				value.removeAttribute('placeholders');
+			}
+			else
+			{
+				value.setAttribute('placeholders', '1');
+			}
+		});
+		
+		replace.appendChild(input);
+		mxUtils.write(replace, mxResources.get('placeholders'));
+		
+		if (EditDataDialog.placeholderHelpLink != null)
+		{
+			var link = document.createElement('a');
+			link.setAttribute('href', EditDataDialog.placeholderHelpLink);
+			link.setAttribute('title', mxResources.get('help'));
+			link.setAttribute('target', '_blank');
+			link.style.marginLeft = '8px';
+			link.style.cursor = 'help';
+			
+			var icon = document.createElement('img');
+			mxUtils.setOpacity(icon, 50);
+			icon.style.height = '16px';
+			icon.style.width = '16px';
+			icon.setAttribute('border', '0');
+			icon.setAttribute('valign', 'middle');
+			icon.style.marginTop = (mxClient.IS_IE11) ? '0px' : '-4px';
+			icon.setAttribute('src', Editor.helpImage);
+			link.appendChild(icon);
+			
+			replace.appendChild(link);
+		}
+		
+		buttons.appendChild(replace);
+	}
+	
+	if (ui.editor.cancelFirst)
+	{
+		buttons.appendChild(cancelBtn);
+		buttons.appendChild(applyBtn);
+	}
+	else
+	{
+		buttons.appendChild(applyBtn);
+		buttons.appendChild(cancelBtn);
+	}
+
+	div.appendChild(buttons);
+	this.container = div;
+};
+
+// Prarthana added new dialog
+
+var EditDataDialog1 = function(ui, cell)
+{
+	var div = document.createElement('div');
+	var graph = ui.editor.graph;
+	
+	var value = graph.getModel().getValue(cell);
+	
+	// Converts the value to an XML node
+	if (!mxUtils.isNode(value))
+	{
+		var doc = mxUtils.createXmlDocument();
+		var obj = doc.createElement('object');
+		obj.setAttribute('label', value || '');
+		value = obj;
+	}
+	
+	var meta = {};
+	
+	try
+	{
+		var temp = mxUtils.getValue(ui.editor.graph.getCurrentCellStyle(cell), 'metaData', null);
+		
+		if (temp != null)
+		{
+			meta = JSON.parse(temp);
+		}
+	}
+	catch (e)
+	{
+		// ignore
+	}
+	
+	// Creates the dialog contents
+	var form = new mxForm('properties');
+	form.table.style.width = '100%';
+
+	var attrs = value.attributes;
+	var names = [];
+	var texts = [];
+	var count = 0;
+
+	var id = (EditDataDialog1.getDisplayIdForCell != null) ?
+		EditDataDialog1.getDisplayIdForCell(ui, cell) : null;
+ //prarthana add new select button
+var addSelect = function(index, name, value){
+
+		names[index] = name;
+	
+		texts[index] = form.addTextArea(names[count] + ':', value, 2);
+		texts[index].style.width = '100%';
+		
+		if (value.indexOf('\n') > 0)
+		{
+			texts[index].setAttribute('rows', '2');
+		}
+		
+		// commented remove button
+		// addRemoveButton(texts[index], name);
+		
+		if (meta[name] != null && meta[name].editable == false)
+		{
+			texts[index].setAttribute('disabled', 'disabled');
+		}
+//Create array of options to be added
+var array = ["Volvo","Saab","Mercades","Audi"];
+
+//Create and append select list
+var selectList = document.createElement("select");
+selectList.style.marginBottom = '8px';
+selectList.style.width = '202px';
+selectList.id = "mySelect";
+myParent.appendChild(selectList);
+
+//Create and append the options
+for (var i = 0; i < array.length; i++) {
+    var option = document.createElement("option");
+    option.value = array[i];
+    option.text = array[i];
+    selectList.appendChild(option);
+}
+}
 	
 	var addRemoveButton = function(text, name)
+
 	{
 		var wrapper = document.createElement('div');
 		wrapper.style.position = 'relative';
@@ -1376,25 +1919,94 @@ var EditDataDialog = function(ui, cell)
 			texts[index].setAttribute('rows', '2');
 		}
 		
-		addRemoveButton(texts[index], name);
+		// commented remove button
+		// addRemoveButton(texts[index], name);
 		
 		if (meta[name] != null && meta[name].editable == false)
 		{
 			texts[index].setAttribute('disabled', 'disabled');
 		}
 	};
+
+
+	
 	
 	var temp = [];
 	var isLayer = graph.getModel().getParent(cell) == graph.getModel().getRoot();
+//prarthana
+if ( attrs.length===1) {
+	var cells = graph.getSelectionCells();
+	var shape = graph.getModel().getStyle(cells[0]);
+	console.log(shape);
+	var persistent_disk = 'shape=mxgraph.gcp2.hexIcon;prIcon=persistent_disk';
+	var compute_engine = "shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine";
+	var cloud_network = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_network';
+	var cloud_firewall = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_firewall_rules';
+	var virtual_privatecloud = 'shape=mxgraph.gcp2.hexIcon;prIcon=virtual_private_cloud';
+	var cloud_im = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_iam';
+	//let hasShape = shape.includes("shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine");
+	// the array is defined and has at least one element
+	// array exists and is not empty
 
+	
+	
+	if(shape.includes(compute_engine)){
+	
+		temp.push({name: 'Allow_Update', value: ""});
+		temp.push({name: 'Machine_Type', value: ""});
+		temp.push({name: 'Name', value: ""});
+		temp.push({name: 'Source', value: ""});
+		temp.push({name: 'SubNetwork', value: ""});
+		temp.push({name: 'Tags', value: ""});
+		temp.push({name: 'Zone', value: ""});
+	}
+	if(shape.includes(persistent_disk)){
+		temp.push({name: 'Disk_Type', value: ""});
+		temp.push({name: 'Family', value: ""});
+		temp.push({name: 'Image', value: ""});
+		temp.push({name: 'Name', value: ""});
+		temp.push({name: 'Project', value: ""});
+		temp.push({name: 'Size', value: ""});
+		temp.push({name: 'Type', value: ""});
+		temp.push({name: 'Persistant Disk', value: ""});
+		temp.push({name: 'Zone', value: ""});
+
+	}
+	// if(shape.includes(cloud_firewall)){
+	// 	temp.push({name: 'Name', value: ""});
+	// 	temp.push({name: 'Network', value: ""});
+	// 	temp.push({name: 'Ports', value: ""});
+	// 	temp.push({name: 'Protocol', value: ""});
+	// 	temp.push({name: 'Source_Tag', value: ""});
+	// 	temp.push({name: 'Type', value: ""});		
+	// }
+	// if(shape.includes(cloud_im)){
+	// 	temp.push({name: 'Account_Id', value: ""});
+	// 	temp.push({name: 'Display_Name', value: ""});
+	// 	temp.push({name: 'Type', value: ""});		
+	// }
+	// if(shape.includes(cloud_im)){
+	// 	temp.push({name: 'Account_Id', value: ""});
+	// 	temp.push({name: 'Display_Name', value: ""});
+	// 	temp.push({name: 'Type', value: ""});		
+	// }
+
+}
 	for (var i = 0; i < attrs.length; i++)
 	{
 		if ((isLayer || attrs[i].nodeName != 'label') && attrs[i].nodeName != 'placeholders')
 		{
 			temp.push({name: attrs[i].nodeName, value: attrs[i].nodeValue});
+			
+			// added by prarthana: to-do
+			// temp.push({name: hello1, value: attrs[i].nodeValue});
+			// temp.push({name: hello2, value: attrs[i].nodeValue});
+			// temp.push({name: hello11, value: testing});
+			// alert(value);
 		}
 	}
 	
+
 	// Sorts by name
 	temp.sort(function(a, b)
 	{
@@ -1426,6 +2038,11 @@ var EditDataDialog = function(ui, cell)
 	for (var i = 0; i < temp.length; i++)
 	{
 		addTextArea(count, temp[i].name, temp[i].value);
+
+		// added by prarthana: to-do
+		// addTextArea(count, text3, textvalue3);
+		// addTextArea(count, text4, textvalue4);
+		
 		count++;
 	}
 	
@@ -1537,10 +2154,11 @@ var EditDataDialog = function(ui, cell)
 		{
 			ui.hideDialog.apply(ui, arguments);
 			
+			
 			// Clones and updates the value
 			value = value.cloneNode(true);
 			var removeLabel = false;
-			
+			//console.log(value,'1')
 			for (var i = 0; i < names.length; i++)
 			{
 				if (texts[i] == null)
@@ -1549,6 +2167,7 @@ var EditDataDialog = function(ui, cell)
 				}
 				else
 				{
+					//console.log(texts[i].value,'test');
 					value.setAttribute(names[i], texts[i].value);
 					removeLabel = removeLabel || (names[i] == 'placeholder' &&
 						value.getAttribute('placeholders') == '1');
@@ -1560,7 +2179,7 @@ var EditDataDialog = function(ui, cell)
 			{
 				value.removeAttribute('label');
 			}
-			
+			console.log(value,'test2');
 			// Updates the value of the cell (undoable)
 			graph.getModel().setValue(cell, value);
 		}
@@ -1620,10 +2239,10 @@ var EditDataDialog = function(ui, cell)
 		replace.appendChild(input);
 		mxUtils.write(replace, mxResources.get('placeholders'));
 		
-		if (EditDataDialog.placeholderHelpLink != null)
+		if (EditDataDialog1.placeholderHelpLink != null)
 		{
 			var link = document.createElement('a');
-			link.setAttribute('href', EditDataDialog.placeholderHelpLink);
+			link.setAttribute('href', EditDataDialog1.placeholderHelpLink);
 			link.setAttribute('title', mxResources.get('help'));
 			link.setAttribute('target', '_blank');
 			link.style.marginLeft = '8px';
@@ -1660,10 +2279,25 @@ var EditDataDialog = function(ui, cell)
 	this.container = div;
 };
 
+
 /**
  * Optional help link.
  */
 EditDataDialog.getDisplayIdForCell = function(ui, cell)
+{
+	var id = null;
+	
+	if (ui.editor.graph.getModel().getParent(cell) != null)
+	{
+		id = cell.getId();
+	}
+	
+	return id;
+};
+/**
+ * Optional help link.Prarthana
+ */
+EditDataDialog1.getDisplayIdForCell = function(ui, cell)
 {
 	var id = null;
 	
@@ -1680,6 +2314,10 @@ EditDataDialog.getDisplayIdForCell = function(ui, cell)
  */
 EditDataDialog.placeholderHelpLink = null;
 
+/**
+ * Optional help link.Prarthana
+ */
+EditDataDialog1.placeholderHelpLink = null;
 /**
  * Constructs a new link dialog.
  */

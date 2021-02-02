@@ -589,6 +589,7 @@ procEng=Proc. Eng.
 project=Project
 priority=Priority
 showproperties=Properties
+customButtonData=Preview
 publish=Publish
 quickStart=Quick Start Video
 rack=Rack
