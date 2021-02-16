@@ -4814,6 +4814,8 @@
 	 * Hook for subclassers.
 	 */
 	EditorUi.prototype.exportFile = function(data, filename, mimeType, base64Encoded, mode, folderId)
+
+	
 	{
 		// do nothing
 	};

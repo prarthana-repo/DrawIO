@@ -4,12 +4,16 @@
 /**
  * Constructs the actions object for the given UI.
  */
+
 function Actions(editorUi)
 {
 	this.editorUi = editorUi;
+	
 	this.actions = new Object();
 	this.init();
 };
+
+
 
 /**
  * Adds the default actions.
@@ -72,7 +76,8 @@ Actions.prototype.init = function()
 		ui.showDialog(dlg.container, 620, 420, true, false);
 		dlg.init();
 	});
-	this.addAction('pageSetup...', function() { ui.showDialog(new PageSetupDialog(ui).container, 320, 220, true, true); }).isEnabled = isGraphEnabled;
+	this.addAction('pageSetup...', function() {
+		 ui.showDialog(new PageSetupDialog(ui).container, 320, 220, true, true); }).isEnabled = isGraphEnabled;
 	this.addAction('print...', function() { ui.showDialog(new PrintDialog(ui).container, 300, 180, true, true); }, null, 'sprite-print', Editor.ctrlKey + '+P');
 	this.addAction('preview', function() { mxUtils.show(graph, null, 10, 10); });
 	
@@ -308,16 +313,153 @@ Actions.prototype.init = function()
 		var cell = graph.getSelectionCell() || graph.getModel().getRoot();
 		ui.showDataDialog(cell);
 	}, null, null, Editor.ctrlKey + '+M');
-	this.addAction('customButtonData...', function()
-			{
-				var cell = graph.getSelectionCell() || graph.getModel().getRoot();
-				ui.showDataDialog(cell);
-			}, null, null, Editor.ctrlKey + '+H');
+
+	//prarthana added new Preview Button
+
+	
+	this.addAction('customButtonData...', mxUtils.bind(this, function()
+	{
+	      
+	
+		var file = this.editorUi.getCurrentFile();
+		var xml_data = mxUtils.getXml(this.editorUi.editor.getGraphXml());
+		
+		console.log(xml_data);
+	//	 var url = "http://localhost:8090/readxml";
+	var url = "http://34.71.130.176:8090/readxml";
+		 var xhr;
+	     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+            xhr = new XMLHttpRequest();
+           } else if (window.ActiveXObject) { // IE 8 and older
+               xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }		
+  // Open a connection to the server
+  xhr.open("POST", url, true);
+  xhr.responseType = 'text';
+  xhr.onload = function() {
+	//alert(`Loaded: ${xhr.status}`);
+  };
+  xhr.onerror = function() { // only triggers if the request couldn't be made at all
+   alert(`Network Error`);
+  };
+
+  var xmlDoc;
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState == 4 && xhr.status == 200) {
+			  xmlDoc = xhr.response;
+			  console.log(xhr.responseText);
+			  console.log(xhr.response);
+              alert(xmlDoc);
+              }
+          };
+
+  // declaring that the data being sent is in XML format
+  xhr.setRequestHeader("Content-Type", "application/xml");
+
+  // Send the request
+  xhr.send(xml_data);
+		
+	}, null, null, Editor.ctrlKey + '+H'));
+
+	//Property Button
 	this.addAction('showproperties...', function()
 			{
 				var cell = graph.getSelectionCell() || graph.getModel().getRoot();
-				ui.showDataDialog(cell);
+				ui.showDataDialog1(cell);
+				//new dialog for multiple type of inputs
+				// ui.showDialog(new FormPropertyDialog(ui).container, 300, 420, true, true);
+
+
 			}, null, null, Editor.ctrlKey + '+P');
+
+			
+	    //Status Button
+	     this.addAction('StatusButton...', function()
+			{
+				//var url = "http://localhost:8090/pushtorepo";
+				var url = "http://34.71.130.176:8090/jenkinsstatus";
+
+				var xhr;
+				if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+				   xhr = new XMLHttpRequest();
+				  } else if (window.ActiveXObject) { // IE 8 and older
+					  xhr = new ActiveXObject("Microsoft.XMLHTTP");
+				   }		
+		 // Open a connection to the server
+					xhr.open("GET", url, true);
+		
+		 xhr.onload = function() {
+		 //  alert(`Loaded: ${xhr.status}`);
+		 };
+		 xhr.onerror = function() { // only triggers if the request couldn't be made at all
+		  alert(`Network Error`);
+		 };
+	   
+		 var xmlDoc;
+				 xhr.onreadystatechange = function() {
+					 if (xhr.readyState == 4 && xhr.status == 200) {
+					console.log(xhr.response)
+					 
+					 }
+				 };
+	   
+		 // declaring that the data being sent is in XML format
+		 xhr.setRequestHeader("Content-Type", "application/xml");
+		 xhr.send();
+
+			}, null, null, Editor.ctrlKey + '+W');
+
+// Submit Button
+			this.addAction('SubmitButton...', function()
+			{
+				//var url = "http://localhost:8090/pushtorepo";
+				var url = "http://34.71.130.176:8090/pushtorepo";
+
+				var xhr;
+				if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+				   xhr = new XMLHttpRequest();
+				  } else if (window.ActiveXObject) { // IE 8 and older
+					  xhr = new ActiveXObject("Microsoft.XMLHTTP");
+				   }		
+		 // Open a connection to the server
+				var conf = confirm('Do you really want to submit the form?');
+				if(conf === true)
+				{
+
+					xhr.open("GET", url, true);
+		
+		 xhr.onload = function() {
+		 //  alert(`Loaded: ${xhr.status}`);
+		 };
+		 xhr.onerror = function() { // only triggers if the request couldn't be made at all
+		  alert(`Network Error`);
+		 };
+	   
+		 var xmlDoc;
+				 xhr.onreadystatechange = function() {
+					 if (xhr.readyState == 4 && xhr.status == 200) {
+					 xmlDoc = xhr.response;
+					  alert("Successfully Submitted !!")
+					 
+					 }
+				 };
+	   
+		 // declaring that the data being sent is in XML format
+		 xhr.setRequestHeader("Content-Type", "application/xml");
+		 xhr.send();
+
+					
+				}
+				else{
+					
+					console.log("not submit");
+				}
+
+				
+		 
+			}, null, null, null);
+			
+			
 	this.addAction('editTooltip...', function()
 	{
 		var graph = ui.editor.graph;
@@ -1068,6 +1210,7 @@ Actions.prototype.init = function()
 		if (cells != null && cells.length > 0)
 		{
 			var model = graph.getModel();
+			
 			
 	    	var dlg = new TextareaDialog(this.editorUi, mxResources.get('editStyle') + ':',
 	    		model.getStyle(cells[0]) || '', function(newValue)

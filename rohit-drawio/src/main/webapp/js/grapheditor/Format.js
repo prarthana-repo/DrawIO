@@ -5321,8 +5321,10 @@ DiagramFormatPanel.prototype.init = function()
 		this.container.appendChild(this.addOptions(this.createPanel()));
 		this.container.appendChild(this.addPaperSize(this.createPanel()));
 		this.container.appendChild(this.addStyleOps(this.createPanel()));
-		// adding new section under Diagram panel tab
-		this.container.appendChild(this.addCustomButton(this.createPanel()));		
+		// prarthana adding new section under Diagram panel tab
+		this.container.appendChild(this.addCustomButton(this.createPanel()));
+		this.container.appendChild(this.addSubmitButton(this.createPanel()));
+		this.container.appendChild(this.addStatusButton(this.createPanel()));		
 	}
 };
 
@@ -5756,7 +5758,7 @@ DiagramFormatPanel.prototype.addStyleOps = function(div)
 };
 
 /**
- * Adding custom buttom
+ * Adding preview buttom
  */
 DiagramFormatPanel.prototype.addCustomButton = function(div)
 {
@@ -5766,6 +5768,42 @@ DiagramFormatPanel.prototype.addCustomButton = function(div)
 	}));
 	
 	btn.setAttribute('title', mxResources.get('customButtonData') + ' (' + this.editorUi.actions.get('customButtonData').shortcut + ')');
+	btn.style.width = '202px';
+	btn.style.marginBottom = '2px';
+	div.appendChild(btn);
+
+	return div;
+};
+
+/**
+ * Adding submit buttom
+ */
+DiagramFormatPanel.prototype.addSubmitButton = function(div)
+{
+	var btn = mxUtils.button(mxResources.get('SubmitButton'), mxUtils.bind(this, function(evt)
+	{
+		this.editorUi.actions.get('SubmitButton').funct();
+	}));
+	
+	btn.setAttribute('title', mxResources.get('SubmitButton') + ' (' + this.editorUi.actions.get('SubmitButton').shortcut + ')');
+	btn.style.width = '202px';
+	btn.style.marginBottom = '2px';
+	div.appendChild(btn);
+
+	return div;
+};
+
+/**
+ * Adding status buttom
+ */
+DiagramFormatPanel.prototype.addStatusButton= function(div)
+{
+	var btn = mxUtils.button(mxResources.get('StatusButton'), mxUtils.bind(this, function(evt)
+	{
+		this.editorUi.actions.get('StatusButton').funct();
+	}));
+	
+	btn.setAttribute('title', mxResources.get('StatusButton') + ' (' + this.editorUi.actions.get('StatusButton').shortcut + ')');
 	btn.style.width = '202px';
 	btn.style.marginBottom = '2px';
 	div.appendChild(btn);
