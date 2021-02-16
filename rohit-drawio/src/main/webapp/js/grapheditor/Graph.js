@@ -7653,6 +7653,8 @@ if (typeof mxVertexHandler != 'undefined')
 			
 			this.setAttributeForCell(cell, key, link);
 		};
+
+		
 		
 		/**
 		 * Returns the cells in the model (or given array) that have all of the
@@ -7682,7 +7684,7 @@ if (typeof mxVertexHandler != 'undefined')
 				var doc = mxUtils.createXmlDocument();
 				
 				value = doc.createElement('UserObject');
-				value.setAttribute('label', cell.value || '');
+				value.setAttribute('label', cell.value || 'hello');
 			}
 			
 			if (attributeValue != null)

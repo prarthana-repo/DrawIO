@@ -1308,11 +1308,7 @@ var EditDataDialog = function(ui, cell)
 
 	var id = (EditDataDialog.getDisplayIdForCell != null) ?
 		EditDataDialog.getDisplayIdForCell(ui, cell) : null;
-		//prarthana
-	//	alert(ui.editor.graph.getModel().getId);
-		var extractId = id.substring(0,20);
-		console.log(extractId);
-	//
+	
 	var addRemoveButton = function(text, name)
 	{
 		var wrapper = document.createElement('div');
@@ -1369,7 +1365,7 @@ var EditDataDialog = function(ui, cell)
 		wrapper.appendChild(removeAttr);
 		parent.appendChild(wrapper);
 	};
-	//prarthana cutomise add text
+	
 	var addTextArea = function(index, name, value)
 	{
 		names[index] = name;
@@ -1381,8 +1377,7 @@ var EditDataDialog = function(ui, cell)
 			texts[index].setAttribute('rows', '2');
 		}
 		
-		// commented remove button
-		// addRemoveButton(texts[index], name);
+		addRemoveButton(texts[index], name);
 		
 		if (meta[name] != null && meta[name].editable == false)
 		{
@@ -1391,23 +1386,12 @@ var EditDataDialog = function(ui, cell)
 	};
 	
 	var temp = [];
-
-	// added by prarthana: to-do add static values in temp array
-	//temp.push({name: 'field1', value: attrs[0].nodeValue});
-	
-		// add 1st time static fields
-		
-	
-	
-
 	var isLayer = graph.getModel().getParent(cell) == graph.getModel().getRoot();
-	
 
 	for (var i = 0; i < attrs.length; i++)
 	{
 		if ((isLayer || attrs[i].nodeName != 'label') && attrs[i].nodeName != 'placeholders')
 		{
-			// fetching dynamically and adding values in in-memory object
 			temp.push({name: attrs[i].nodeName, value: attrs[i].nodeValue});
 		}
 	}
@@ -1437,85 +1421,12 @@ var EditDataDialog = function(ui, cell)
 		text.style.textAlign = 'center';
 		mxUtils.write(text, id);
 		
-		form.addField(mxResources.get('id') + ':', text);		
-	}
-	//prarthana
-	if ( attrs.length===1) {
-        var cells = graph.getSelectionCells();
-		var shape = graph.getModel().getStyle(cells[0]);
-		console.log(shape);
-		var persistent_disk = 'shape=mxgraph.gcp2.hexIcon;prIcon=persistent_disk';
-		var compute_engine = "shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine";
-		var cloud_network = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_network';
-		var cloud_firewall = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_firewall_rules';
-		var virtual_privatecloud = 'shape=mxgraph.gcp2.hexIcon;prIcon=virtual_private_cloud';
-		var cloud_im = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_iam';
-		//let hasShape = shape.includes("shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine");
-		// the array is defined and has at least one element
-		// array exists and is not empty
-
-		//prarthana add new select button
-		var propertySelect = document.createElement('select');
-		propertySelect.style.marginBottom = '8px';
-		propertySelect.style.width = '202px';
-		
-		if(shape.includes(compute_engine)){
-		   // addTextArea.style.width = "93.5%";
-			temp.push({name: 'Allow_Update', value: ""});
-			temp.push({name: 'Machine_Type', value: ""});
-			temp.push({name: 'Name', value: ""});
-			temp.push({name: 'Source', value: ""});
-			temp.push({name: 'SubNetwork', value: ""});
-			temp.push({name: 'Tags', value: ""});
-			temp.push({name: 'Zone', value: ""});
-		}
-		if(shape.includes(persistent_disk)){
-			
-			temp.push({name: 'Disk_Type', value: ""});
-			temp.push({name: 'Family', value: ""});
-			temp.push({name: 'Image', value: ""});
-			temp.push({name: 'Name', value: ""});
-			temp.push({name: 'Project', value: ""});
-			temp.push({name: 'Size', value: ""});
-			temp.push({name: 'Type', value: ""});
-			temp.push({name: 'Persistant Disk', value: ""});
-			temp.push({name: 'Zone', value: ""});
-
-		}
-		if(shape.includes(cloud_firewall)){
-			
-			temp.push({name: 'Name', value: ""});
-			temp.push({name: 'Network', value: ""});
-			temp.push({name: 'Ports', value: ""});
-			temp.push({name: 'Protocol', value: ""});
-			temp.push({name: 'Source_Tag', value: ""});
-			temp.push({name: 'Type', value: ""});		
-		}
-		if(shape.includes(cloud_im)){
-			
-			temp.push({name: 'Account_Id', value: ""});
-			temp.push({name: 'Display_Name', value: ""});
-			temp.push({name: 'Type', value: ""});		
-		}
-		if(shape.includes(virtual_privatecloud)){
-			
-			temp.push({name: 'Name', value: ""});
-			temp.push({name: 'Auto_Create_Subnetwork', value: ""});
-					
-		}
-		if(shape.includes(cloud_network)){
-			
-			temp.push({name: 'IP_CIDR_Range', value: ""});
-			temp.push({name: 'Region', value: ""});
-			temp.push({name: 'Name', value: ""});
-					
-		}
-	
+		form.addField(mxResources.get('id') + ':', text);
 	}
 	
 	for (var i = 0; i < temp.length; i++)
 	{
-		addTextArea(count, temp[i].name, temp[i].value);		
+		addTextArea(count, temp[i].name, temp[i].value);
 		count++;
 	}
 	
@@ -1532,11 +1443,6 @@ var EditDataDialog = function(ui, cell)
 	
 	var nameInput = document.createElement('input');
 	nameInput.setAttribute('placeholder', mxResources.get('enterPropertyName'));
-	// placeholder for dynamic key added by user
-	// TO-DO: prarthana
-
-
-
 	nameInput.setAttribute('type', 'text');
 	nameInput.setAttribute('size', (mxClient.IS_IE || mxClient.IS_IE11) ? '36' : '40');
 	nameInput.style.boxSizing = 'border-box';
@@ -1548,8 +1454,6 @@ var EditDataDialog = function(ui, cell)
 	div.appendChild(top);
 	
 	var addBtn = mxUtils.button(mxResources.get('addProperty'), function()
-	// TO-DO: prarthana: it can be disable to add dynamic attributes by user
-
 	{
 		var name = nameInput.value;
 
@@ -1637,8 +1541,6 @@ var EditDataDialog = function(ui, cell)
 			// Clones and updates the value
 			value = value.cloneNode(true);
 			var removeLabel = false;
-			console.log(value,'0');
-
 			
 			for (var i = 0; i < names.length; i++)
 			{
@@ -1648,7 +1550,6 @@ var EditDataDialog = function(ui, cell)
 				}
 				else
 				{
-					console.log(names[i].value, texts[i].value,'0');
 					value.setAttribute(names[i], texts[i].value);
 					removeLabel = removeLabel || (names[i] == 'placeholder' &&
 						value.getAttribute('placeholders') == '1');
@@ -1663,12 +1564,6 @@ var EditDataDialog = function(ui, cell)
 			
 			// Updates the value of the cell (undoable)
 			graph.getModel().setValue(cell, value);
-
-			var enc = new mxCodec();
-		   var node = enc.encode(graph.getModel().getValue(cell));
-		   console.log(node,'node');
-
-			
 		}
 		catch (e)
 		{
@@ -1766,7 +1661,8 @@ var EditDataDialog = function(ui, cell)
 	this.container = div;
 };
 
-// Prarthana added new dialog
+
+//Prarthana added new dialog
 
 var EditDataDialog1 = function(ui, cell)
 {
@@ -1811,44 +1707,9 @@ var EditDataDialog1 = function(ui, cell)
 
 	var id = (EditDataDialog1.getDisplayIdForCell != null) ?
 		EditDataDialog1.getDisplayIdForCell(ui, cell) : null;
- //prarthana add new select button
-var addSelect = function(index, name, value){
 
-		names[index] = name;
-	
-		texts[index] = form.addTextArea(names[count] + ':', value, 2);
-		texts[index].style.width = '100%';
 		
-		if (value.indexOf('\n') > 0)
-		{
-			texts[index].setAttribute('rows', '2');
-		}
-		
-		// commented remove button
-		// addRemoveButton(texts[index], name);
-		
-		if (meta[name] != null && meta[name].editable == false)
-		{
-			texts[index].setAttribute('disabled', 'disabled');
-		}
-//Create array of options to be added
-var array = ["Volvo","Saab","Mercades","Audi"];
 
-//Create and append select list
-var selectList = document.createElement("select");
-selectList.style.marginBottom = '8px';
-selectList.style.width = '202px';
-selectList.id = "mySelect";
-myParent.appendChild(selectList);
-
-//Create and append the options
-for (var i = 0; i < array.length; i++) {
-    var option = document.createElement("option");
-    option.value = array[i];
-    option.text = array[i];
-    selectList.appendChild(option);
-}
-}
 	
 	var addRemoveButton = function(text, name)
 
@@ -1906,6 +1767,7 @@ for (var i = 0; i < array.length; i++) {
 		wrapper.appendChild(text);
 		wrapper.appendChild(removeAttr);
 		parent.appendChild(wrapper);
+		
 	};
 	
 	var addTextArea = function(index, name, value)
@@ -1928,12 +1790,21 @@ for (var i = 0; i < array.length; i++) {
 		}
 	};
 
-
-	
-	
 	var temp = [];
 	var isLayer = graph.getModel().getParent(cell) == graph.getModel().getRoot();
-//prarthana
+
+		//prarthana cutomise add drop down
+		var addDropdown = function(index, name, value)
+		{
+			names[index] = name;
+            texts[index] = form.addOption(index, names[count] + ':', value, true);
+			texts[index].style.width = '100%';
+			
+			if (value.indexOf('\n') > 0)
+			{
+				texts[index].setAttribute('rows', '2');
+			}			
+		};
 if ( attrs.length===1) {
 	var cells = graph.getSelectionCells();
 	var shape = graph.getModel().getStyle(cells[0]);
@@ -1944,6 +1815,8 @@ if ( attrs.length===1) {
 	var cloud_firewall = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_firewall_rules';
 	var virtual_privatecloud = 'shape=mxgraph.gcp2.hexIcon;prIcon=virtual_private_cloud';
 	var cloud_im = 'shape=mxgraph.gcp2.hexIcon;prIcon=cloud_iam';
+	var cloud_Dns = "shape=mxgraph.gcp2.hexIcon;prIcon=cloud_dns";
+	var cloud_loadbalancing= "shape=mxgraph.gcp2.hexIcon;prIcon=cloud_load_balancing";
 	//let hasShape = shape.includes("shape=mxgraph.gcp2.hexIcon;prIcon=compute_engine");
 	// the array is defined and has at least one element
 	// array exists and is not empty
@@ -1951,7 +1824,6 @@ if ( attrs.length===1) {
 	
 	
 	if(shape.includes(compute_engine)){
-	
 		temp.push({name: 'Allow_Update', value: ""});
 		temp.push({name: 'Machine_Type', value: ""});
 		temp.push({name: 'Name', value: ""});
@@ -1961,6 +1833,7 @@ if ( attrs.length===1) {
 		temp.push({name: 'Zone', value: ""});
 	}
 	if(shape.includes(persistent_disk)){
+			
 		temp.push({name: 'Disk_Type', value: ""});
 		temp.push({name: 'Family', value: ""});
 		temp.push({name: 'Image', value: ""});
@@ -1968,28 +1841,48 @@ if ( attrs.length===1) {
 		temp.push({name: 'Project', value: ""});
 		temp.push({name: 'Size', value: ""});
 		temp.push({name: 'Type', value: ""});
-		temp.push({name: 'Persistant Disk', value: ""});
 		temp.push({name: 'Zone', value: ""});
 
 	}
-	// if(shape.includes(cloud_firewall)){
-	// 	temp.push({name: 'Name', value: ""});
-	// 	temp.push({name: 'Network', value: ""});
-	// 	temp.push({name: 'Ports', value: ""});
-	// 	temp.push({name: 'Protocol', value: ""});
-	// 	temp.push({name: 'Source_Tag', value: ""});
-	// 	temp.push({name: 'Type', value: ""});		
-	// }
-	// if(shape.includes(cloud_im)){
-	// 	temp.push({name: 'Account_Id', value: ""});
-	// 	temp.push({name: 'Display_Name', value: ""});
-	// 	temp.push({name: 'Type', value: ""});		
-	// }
-	// if(shape.includes(cloud_im)){
-	// 	temp.push({name: 'Account_Id', value: ""});
-	// 	temp.push({name: 'Display_Name', value: ""});
-	// 	temp.push({name: 'Type', value: ""});		
-	// }
+	if(shape.includes(cloud_firewall)){
+		
+		temp.push({name: 'Name', value: ""});
+		temp.push({name: 'Network', value: ""});
+		temp.push({name: 'Ports', value: ""});
+		temp.push({name: 'Protocol', value: ""});
+		temp.push({name: 'Source_Tag', value: ""});
+		temp.push({name: 'Type', value: ""});		
+	}
+	if(shape.includes(cloud_im)){
+		
+		temp.push({name: 'Account_Id', value: ""});
+		temp.push({name: 'Display_Name', value: ""});
+		temp.push({name: 'Type', value: ""});		
+	}
+	if(shape.includes(virtual_privatecloud)){
+		
+		temp.push({name: 'Name', value: ""});
+		temp.push({name: 'Auto_Create_Subnetwork', value: ""});
+				
+	}
+	if(shape.includes(cloud_network)){
+		
+		temp.push({name: 'IP_CIDR_Range', value: ""});
+		temp.push({name: 'Region', value: ""});
+		temp.push({name: 'Name', value: ""});
+				
+	}
+	if(shape.includes(cloud_Dns)){
+		
+		temp.push({name: 'Dns_Name', value: ""});
+		temp.push({name: 'Name', value: ""});
+		temp.push({name: 'Type', value: ""});
+				
+	}
+	if(shape.includes(cloud_loadbalancing)){
+		
+		
+	}
 
 }
 	for (var i = 0; i < attrs.length; i++)
@@ -2038,6 +1931,7 @@ if ( attrs.length===1) {
 	for (var i = 0; i < temp.length; i++)
 	{
 		addTextArea(count, temp[i].name, temp[i].value);
+		//addDropdown(count, temp[i].name, temp[i].value);
 
 		// added by prarthana: to-do
 		// addTextArea(count, text3, textvalue3);

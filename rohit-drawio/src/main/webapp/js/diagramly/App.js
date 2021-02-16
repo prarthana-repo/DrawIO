@@ -4275,7 +4275,7 @@ App.prototype.saveLibrary = function(name, images, file, mode, noSpin, noReload,
  */
 App.prototype.saveFile = function(forceDialog, success)
 {
-	alert('app savefile');
+	//alert('app savefile');
 	var file = this.getCurrentFile();
 	
 	if (file != null)
@@ -5706,7 +5706,7 @@ App.prototype.updateButtonContainer = function()
  */
 App.prototype.save = function(name, done)
 {
-	alert('app save');
+	//alert('app save');
 	var file = this.getCurrentFile();
 	
 	if (file != null && this.spinner.spin(document.body, mxResources.get('saving')))
